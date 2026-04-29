@@ -6,6 +6,11 @@
 </head>
 <body>
 <h1>Login</h1>
+<form th:action="@{/members/login}" method="post">
+  <input type="text" name="id" id="id">
+  <input type="password" name="pass" id="pass">
+  <button type="submit">로그인</button>
+</form>
 
 
 </body>

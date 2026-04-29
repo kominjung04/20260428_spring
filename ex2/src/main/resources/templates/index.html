@@ -2,12 +2,15 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Welcome Index</title>
+  <title>Welcome Index::${id}</title>
+  <link rel="icon" href = "/favicon.ico"/>
 </head>
 <body>
 <h1>Index</h1>
-<a th:href="@{/members/join}">join</a>
-<a th:href="@{/members/login}">login</a>
-
+[[${id}]]님 환영합니다
+<ul>
+  <li><a th:href="@{/members/join}">join</a></li> <!--get을 이용해서 이동-->
+  <li><a th:href="@{/members/login}">login</a></li>
+</ul>
 </body>
 </html>
