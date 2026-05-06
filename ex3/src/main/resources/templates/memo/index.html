@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="icon" href="/favicon.ico"/>
+</head>
+<body>
+<h1 th:text="${title}"></h1>
+<h1>[[${title}]]</h1>
+<!-- [[${title}]] -->
+
+[[${#numbers.formatInteger(1,5)}]]
+[[${#temporals.format(T(java.time.LocalDate).now, 'yyyy/MM/dd')}]]
+<ul>
+  <!-- state 에는 index, count, first, last 존재-->
+  <li th:each="memo,state : ${memoList}" th:if="${memo.mno %5 == 0}">
+     [[${state.index}]] : [[${memo}]]
+  </li>
+</ul>
+<style>
+  .start {color: red}
+</style>
+<ul>
+  <!-- 태그 없이 th:each, th:if 등을 적용하려고 할 때 th:block을 사용-->
+  <th:block th:each="memo, state : ${memoList}" th:if="${memo.mno %5 == 0}" >
+  <li th:class="${state.last}?'start'" th:text="${memo}"></li>
+  </th:block>
+</ul>
+<ul>
+  <style>
+    .target {background-color: red}
+  </style>
+  <li th:each="memo, state : ${memoList}" th:class="${memo.mno % 5 == 0}?'target'">
+
+    쿼리(?): <a th:href="@{/memo/detail(mno=${memo.mno},memoText = ${memo.memoText})}">[[${memo}]]</a>
+    경로(/): <a th:href="@{/memo/detail/{mno}(mno=${memo.mno})}">[[${memo}]]</a>
+  </li>
+</ul>
+<script th:inline="javascript">
+  // [[${title}]]만 쓰게 되면 IntelliJ가 이것을 부적합한 문법으로 인식
+  var title= /*[[${title}]]*/""; // 그래서 이렇게 작성하게됨
+</script>
+</body>
+</html>

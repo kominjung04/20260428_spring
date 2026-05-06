@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Memo {
-  @Id
+  @Id //기본키 지정
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long mno;
 
