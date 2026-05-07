@@ -28,7 +28,7 @@ class GuestbookRepositoryTests {
       Guestbook guestbook = Guestbook.builder()
           .title("Title..." + i)
           .content("Content..." + i)
-          .writer("Writer..." + (i % 10))
+          .writer("user" + (i % 10))
           .build();
       guestbookRepository.save(guestbook); //jpaRepository로 crud 자동 생성
     });

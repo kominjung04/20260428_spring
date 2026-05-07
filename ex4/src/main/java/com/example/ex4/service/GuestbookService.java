@@ -8,6 +8,7 @@ public interface GuestbookService {
 
   default Guestbook dtoToEntity(GuestbookDTO guestbookDTO) {
     Guestbook guestbook = Guestbook.builder()
+        .gno(guestbookDTO.getGno())
         .title(guestbookDTO.getTitle())
         .content(guestbookDTO.getContent())
         .writer(guestbookDTO.getWriter())
