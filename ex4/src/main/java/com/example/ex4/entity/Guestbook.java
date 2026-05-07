@@ -1,8 +1,14 @@
 package com.example.ex4.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
 public class Guestbook extends BasicEntity{
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
