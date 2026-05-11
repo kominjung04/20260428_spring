@@ -13,12 +13,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class GuestbookServiceImpl implements GuestbookService {
+
 
   private final GuestbookRepository guestbookRepository;
 
@@ -43,5 +45,14 @@ public class GuestbookServiceImpl implements GuestbookService {
       }
     };
     return new PageResultDTO<>(result, fn);
+  }
+
+  @Override
+  public GuestbookDTO read(Long gno) {
+    Optional<Guestbook> result = guestbookRepository.findById(gno);
+    if(result.isPresent()) {
+      return entityToDto(result.get());
+    }
+    return null;
   }
 }

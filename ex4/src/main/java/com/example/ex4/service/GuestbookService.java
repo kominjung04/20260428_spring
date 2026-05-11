@@ -8,7 +8,7 @@ import com.example.ex4.entity.Guestbook;
 public interface GuestbookService {
   Long register(GuestbookDTO guestbookDTO);
   PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO pageRequestDTO);
-
+  GuestbookDTO read(Long gno);
   default Guestbook dtoToEntity(GuestbookDTO guestbookDTO) {
     Guestbook guestbook = Guestbook.builder()
         .gno(guestbookDTO.getGno())
@@ -18,6 +18,7 @@ public interface GuestbookService {
         .build();
     return guestbook;
   }
+
   default GuestbookDTO entityToDto(Guestbook guestbook) {
     GuestbookDTO guestbookDTO = GuestbookDTO.builder()
         .gno(guestbook.getGno())

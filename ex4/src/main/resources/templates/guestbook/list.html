@@ -2,9 +2,11 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <!-- ~{} 템플릿이나 조각을 지정하는 문법 -->
 <th:block th:replace="~{layout/basic::setContent(~{this::content})}">
-  <th:blcok th:fragment="content">
-    <h1 class="mt-4">Guestbook List page</h1>
-    <form th:action="@{/guestbook/list}" method="get" id="frmSrch" style="margin-bottom: 10px">
+  <th:block th:fragment="content">
+    <h1 class="mt-4">Guestbook List Page
+      <a th:href="@{/guestbook/register}" class="btn btn-outline-primary">Register</a>
+    </h1>
+    <form th:action="@{/guestbook/list}" method="get" id="frmSrch" style="margin-bottom: 10px;">
       <div class="input-group">
         <div class="input-group-prepend" style="margin-right: 10px;">
           <select name="type" id="type" class="form-control">
@@ -18,7 +20,7 @@
         </div>
         <input type="text" name="keyword" id="keyword" class="form-control" style="border-radius: 5px">
         <div class="input-group-append" style="margin-left: 10px">
-          <button type="submit" class="btn-outline-primary btnSrch" >검색</button>
+          <button type="submit" class="btn btn-outline-primary btnSrch">검색</button>
         </div>
       </div>
     </form>
@@ -30,7 +32,61 @@
         <th>Register Date</th>
         <th>Modified Date</th>
       </tr>
+      <tr th:each="guestbookDTO : ${pageResultDTO.dtoList}"
+          style="cursor: pointer;"
+          onmouseover="this.style.background='#dbdbdb'"
+          onmouseout="this.style.background='white'"
+          th:onclick="goRead([[${guestbookDTO.gno}]], [[${pageResultDTO.page}]])">
+        <td>[[${guestbookDTO.gno}]]</td>
+        <td>[[${guestbookDTO.title}]]</td>
+        <td>[[${guestbookDTO.writer}]]</td>
+        <td>[[${#temporals.format(guestbookDTO.regDate, 'yyyy/MM/dd hh:mm')}]]</td>
+        <td>[[${#temporals.format(guestbookDTO.modDate, 'yyyy/MM/dd hh:mm')}]]</td>
+      </tr>
     </table>
-  </th:blcok>
+    <ul class="pagination h-100 justify-content-center align-items-center">
+      <li class="page-item" th:if="${pageResultDTO.prev}">
+        <a th:href="@{/guestbook/list(page=${pageResultDTO.start-1})}" class="page-link">Prev</a>
+      </li>
+      <li th:each="page:${pageResultDTO.pageList}" th:class="'page-item'+${pageResultDTO.page==page?' active':''}">
+        <a th:href="@{/guestbook/list(page=${page})}" class="page-link">[[${page}]]</a>
+      </li>
+      <li class="page-item" th:if="${pageResultDTO.next}">
+        <a th:href="@{/guestbook/list(page=${pageResultDTO.end+1})}" class="page-link">Next</a>
+      </li>
+    </ul>
+    <!-- start bootstrap.com modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <!-- <button type="button"  class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <script th:inline="javascript">
+      window.onload = () => {
+        let msg = /*[[${msg}]]*/'msg'
+        if (msg) {
+          const myModal = new bootstrap.Modal(document.querySelector('#myModal'),{backdrop:true});
+          document.querySelector(".modal-title").innerHTML = '<p>알림</p>'
+          document.querySelector(".modal-body").textContent = msg
+          myModal.show();
+          history.replaceState({}, null, null) //모달창 띄운 흔적을 history에서 제거
+        }
+      }
+      function goRead(gno, page) {
+        const url = /*[[@{/guestbook/read}]]*/'url'
+        location.href = url + `?gno=${gno}&page=${page}`
+      }
+    </script>
+  </th:block>
 </th:block>
 </html>
