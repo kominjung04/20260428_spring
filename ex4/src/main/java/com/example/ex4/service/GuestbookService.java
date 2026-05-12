@@ -9,6 +9,8 @@ public interface GuestbookService {
   Long register(GuestbookDTO guestbookDTO);
   PageResultDTO<GuestbookDTO, Guestbook> getList(PageRequestDTO pageRequestDTO);
   GuestbookDTO read(Long gno);
+  Long modify(GuestbookDTO guestbookDTO);
+  Long remove(Long gno);
   default Guestbook dtoToEntity(GuestbookDTO guestbookDTO) {
     Guestbook guestbook = Guestbook.builder()
         .gno(guestbookDTO.getGno())

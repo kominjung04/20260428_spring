@@ -13,12 +13,12 @@
       </div>
       <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="form-control" th:value="${guestbookDTO.title}" />
+        <input type="text" name="title" id="title" class="form-control" th:value="${guestbookDTO.title}" readonly/>
       </div>
       <div class="form-group">
         <label for="content">Content</label>
         <input type="text" name="content" id="content" class="form-control"
-               th:value="${guestbookDTO.content}" />
+               th:value="${guestbookDTO.content}" readonly/>
       </div>
       <div class="form-group">
         <label for="writer">Writer</label>
@@ -36,8 +36,38 @@
                th:value="${#temporals.format(guestbookDTO.modDate, 'yyyy/MM/dd hh:mm')}" readonly>
       </div>
       <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-register">Submit</button>
+        <a th:href="@{/guestbook/modify(page=${pageRequestDTO.page},gno=${guestbookDTO.gno},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}" class="btn btn-outline-primary">수정</a>
+        <a th:href="@{/guestbook/list(page=${pageRequestDTO.page},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}" class="btn btn-outline-primary">리스트보기</a>
       </div>
+      <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <!-- <button type="button"  class="btn btn-primary">Save changes</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <script th:inline="javascript">
+        window.onload = () => {
+          let msg = /*[[${msg}]]*/'msg'
+          if (msg) {
+            const myModal = new bootstrap.Modal(document.querySelector('#myModal'),{backdrop:true});
+            document.querySelector(".modal-title").innerHTML = '<p>알림</p>'
+            document.querySelector(".modal-body").textContent = msg
+            myModal.show();
+            history.replaceState({}, null, null) //모달창 띄운 흔적을 history에서 제거
+          }
+        }
+
+      </script>
+
     </form>
     <script th:inline="javascript">
       const btnRegister = document.querySelector(".btn-register")
