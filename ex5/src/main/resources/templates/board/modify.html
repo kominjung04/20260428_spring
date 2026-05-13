@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout/basic::setContent(~{this::content})}">
+  <th:block th:fragment="content">
+    <style>
+        .form-group {margin: 30px 0 30px 0;}
+    </style>
+    <h1 class="mt-4">Board Modify Page</h1>
+    <form th:action="@{/board/modify}" method="post">
+      <div class="form-group">
+        <label for="gno">Gno</label>
+        <input type="text" name="gno" id="gno" class="form-control" th:value="${boardDTO.gno}" readonly />
+      </div>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" name="title" id="title" class="form-control" th:value="${boardDTO.title}" />
+      </div>
+      <div class="form-group">
+        <label for="content">Content</label>
+        <input type="text" name="content" id="content" class="form-control"
+               th:value="${boardDTO.content}" />
+      </div>
+      <div class="form-group">
+        <label for="writer">Writer</label>
+        <input type="text" name="writer" id="writer" class="form-control"
+               th:value="${boardDTO.writer}" readonly>
+      </div>
+      <div class="form-group">
+        <label>Regist Date</label>
+        <input type="text" class="form-control"
+               th:value="${#temporals.format(boardDTO.regDate, 'yyyy/MM/dd hh:mm')}" readonly>
+      </div>
+      <div class="form-group">
+        <label>Modified Date</label>
+        <input type="text" class="form-control"
+               th:value="${#temporals.format(boardDTO.modDate, 'yyyy/MM/dd hh:mm')}" readonly>
+      </div>
+      <div class="form-group">
+        <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
+        <input type="hidden" name="page" th:value="${pageRequestDTO.type}">
+        <input type="hidden" name="page" th:value="${pageRequestDTO.keyword}">
+        <button class="btn btn-primary btnModify">Modify</button>
+        <button class="btn btn-danger btnDelete">Delete</button>
+        <button class="btn btn-info btnBack">Back</button>
+      </div>
+    </form>
+    <script th:inline="javascript">
+      const btnModify = document.querySelector(".btnModify")
+      const btnDelete = document.querySelector(".btnDelete")
+      const btnBack = document.querySelector(".btnBack")
+      btnModify.onclick = e => {
+        e.preventDefault()
+        if (!title.value) {
+          title.setAttribute('placeholder', "Title을 확인해주세요")
+          title.focus();
+          return;
+        }
+        if (!content.value) {
+          content.setAttribute('placeholder', "content를 확인해주세요")
+          content.focus();
+          return;
+        }
+        document.querySelector("form").submit();
+      }
+
+      btnDelete.onclick = e => {
+        e.preventDefault();
+        document.querySelector("form").setAttribute("action", /*[[@{/board/remove}]]*/'remove');
+        document.querySelector("form").submit();
+      }
+
+      btnBack.onclick = e => {
+        e.preventDefault();
+        window.history.back();
+      }
+    </script>
+  </th:block>
+</th:block>
+</html>
