@@ -17,9 +17,9 @@
                placeholder="내용">
       </div>
       <div class="form-group">
-        <label for="writer">Writer</label>
-        <input type="text" name="writer" id="writer" class="form-control"
-               placeholder="작성자" value="user1">
+        <label for="writerEmail">Writer Email</label>
+        <input type="email" name="writerEmail" id="writerEmail" class="form-control"
+               placeholder="Writer" />
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary btn-register">Submit</button>
@@ -29,7 +29,7 @@
       const btnRegister = document.querySelector(".btn-register")
       const title = document.querySelector("#title")
       const content = document.querySelector("#content")
-      const writer = document.querySelector("#writer")
+      const writerEmail = document.querySelector("#writerEmail")
       btnRegister.onclick = e => {
         e.preventDefault()
         if (!title.value) {
@@ -42,8 +42,8 @@
           content.focus();
           return;
         }
-        if (!writer.value) {
-          writer.setAttribute('placeholder', "Writer를 확인해주세요")
+        if (!writerEmail.value) {
+          writer.setAttribute('placeholder', "writer Email 확인해주세요")
           writer.focus();
           return;
         }

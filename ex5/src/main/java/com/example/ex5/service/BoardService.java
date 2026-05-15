@@ -9,6 +9,9 @@ import com.example.ex5.entity.Member;
 public interface BoardService {
   Long register(BoardDTO boardDTO);
   PageResultDTO<BoardDTO,Object[]> getList(PageRequestDTO pageRequestDTO);
+  BoardDTO get(Long bno);
+  Long removeWithReplies(Long bno);
+  Long modify(BoardDTO boardDTO);
 
   default Board dtoToEntity(BoardDTO boardDTO) {
     Board board = Board.builder()

@@ -32,4 +32,25 @@ class BoardServiceTests {
     pageResultDTO.getDtoList().forEach(System.out::println);
   }
 
+  @Test
+  void testGetBoardByBno() {
+    Long bno = 100L;
+    BoardDTO boardDTO = boardService.get(bno);
+    System.out.println(boardDTO);
+  }
+
+  @Test
+  public void testDeleteByBno() {
+    boardService.removeWithReplies(1l);
+  }
+
+  @Test
+  void testModify() {
+    BoardDTO boardDTO = BoardDTO.builder()
+        .bno(3L)
+        .title("Updated")
+        .content("Updated")
+        .build();
+    boardService.modify(boardDTO);
+  }
 }

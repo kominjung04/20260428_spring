@@ -12,6 +12,7 @@ import java.util.stream.IntStream;
 // 페이지 요청에 의한 결과를 담긴 위한 객체
 @Data
 public class PageResultDTO<DTO,EN> {
+  //한페이지에 필요한 정보들을 나열
   private List<DTO> dtoList; // 페이지 내용에 대한 목록
   private int totalPage; // 총 페이지 수
   private int page; // 요청한 페이지 번호

@@ -3,27 +3,29 @@
 <th:block th:replace="~{layout/basic::setContent(~{this::content})}">
   <th:block th:fragment="content">
     <style>
-        .form-group {margin: 30px 0 30px 0;}
+        .form-group {
+            margin: 30px 0 30px 0;
+        }
     </style>
     <h1 class="mt-4">Board Modify Page</h1>
     <form th:action="@{/board/modify}" method="post">
       <div class="form-group">
-        <label for="gno">Gno</label>
-        <input type="text" name="gno" id="gno" class="form-control" th:value="${boardDTO.gno}" readonly />
+        <label for="bno">Bno</label>
+        <input type="text" name="bno" id="bno" class="form-control" th:value="${boardDTO.bno}" readonly/>
       </div>
       <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="form-control" th:value="${boardDTO.title}" />
+        <input type="text" name="title" id="title" class="form-control" th:value="${boardDTO.title}"/>
       </div>
       <div class="form-group">
         <label for="content">Content</label>
         <input type="text" name="content" id="content" class="form-control"
-               th:value="${boardDTO.content}" />
+               th:value="${boardDTO.content}"/>
       </div>
       <div class="form-group">
-        <label for="writer">Writer</label>
-        <input type="text" name="writer" id="writer" class="form-control"
-               th:value="${boardDTO.writer}" readonly>
+        <label for="writerEmail">writer Email</label>
+        <input type="text" name="writerEmail" id="writerEmail" class="form-control"
+               th:value="${boardDTO.writerEmail + ' (' + boardDTO.writerName + ')'}" readonly>
       </div>
       <div class="form-group">
         <label>Regist Date</label>

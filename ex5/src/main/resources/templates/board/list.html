@@ -27,7 +27,7 @@
     </form>
     <table class="table table-striped">
       <tr>
-        <th>Gno</th>
+        <th>Bno</th>
         <th>Title</th>
         <th>Writer</th>
         <th>Register Date</th>
@@ -35,12 +35,12 @@
       </tr>
       <tr th:each="boardDTO : ${pageResultDTO.dtoList}"
           style="cursor: pointer;"
-          onmouseover="this.style.background='#dbdbdb'"
+          onmouseover="this.style.background='#CFFCFF'"
           onmouseout="this.style.background='white'"
-          th:onclick="goRead([[${boardDTO.gno}]], [[${pageResultDTO.page}]])">
-        <td>[[${boardDTO.gno}]]</td>
-        <td>[[${boardDTO.title}]]</td>
-        <td>[[${boardDTO.writer}]]</td>
+          th:onclick="goRead([[${boardDTO.bno}]], [[${pageResultDTO.page}]])">
+        <td>[[${boardDTO.bno}]]</td>
+        <td>[[${boardDTO.title}]]----------------[<b th:text="${boardDTO.replyCount}"></b>]</td>
+        <td>[[${boardDTO.writerEmail}]]</td>
         <td>[[${#temporals.format(boardDTO.regDate, 'yyyy/MM/dd hh:mm')}]]</td>
         <td>[[${#temporals.format(boardDTO.modDate, 'yyyy/MM/dd hh:mm')}]]</td>
       </tr>
@@ -112,9 +112,9 @@
 
       }
 
-      function goRead(gno, page) {
+      function goRead(bno, page) {
         const url = /*[[@{/board/read}]]*/'url'
-        location.href = url + `?gno=${gno}&page=${page}`
+        location.href = url + `?bno=${bno}&page=${page}`
       }
     </script>
   </th:block>

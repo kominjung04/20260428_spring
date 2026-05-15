@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,5 +29,11 @@ class ReplyRepositoryTests {
           .build();
       replyRepository.save(reply);
     });
+  }
+
+  @Test
+  void testListByBoard() {
+    List<Reply> replies = replyRepository.findAll();
+
   }
 }
