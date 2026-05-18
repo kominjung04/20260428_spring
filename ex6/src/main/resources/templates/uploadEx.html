@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <!--<script src="https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js"
+          integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao="
+          crossorigin="anonymous"></script>-->
+</head>
+<body>
+<input type="file" name="file" id="file" multiple>
+<button type="submit">Upload</button>
+<div id="uploadResult"></div>
+<!--<script th:inline="javascript">
+  const url = /*[[@{/uploadAjax}]]*/'url'
+  const formData = new FormData();
+  const inputFiles = $('input[type="file"]');
+  $("button[type='submit']").click = (e) => {
+    $.ajax({
+      url: url,
+      processData: false,
+      contentType: false,
+      data: formData,
+      type: "POST",
+      dataType: "json",
+      success: function (data) {},
+      error: function (xhr, status, error) {}
+    })
+  }
+</script>-->
+
+<script th:inline="javascript">
+  const formData = new FormData();
+  const inputFiles = document.querySelector('input[type="file"]');
+  document.querySelector("button").onclick = (e) => {
+    e.preventDefault();
+    const files = inputFiles.files; //선택된 파일 목록을 가진 객체
+    for (let i = 0; i < files.length; i++) {
+      console.log(files[i]);
+      formData.append("uploadFiles", files[i]); //복수개의 파일도 배열로 추가
+    }
+    const url = /*[[@{/uploadAjax}]]*/'url'
+    fetch(url, {method: 'POST', body: formData, dataType: 'json'})
+        .then(res => res.json())
+        .then(json => {
+          console.log(json);
+          showUploadedImages(json);
+        })
+        .catch(err => console.log(err));
+  }
+
+  function showUploadedImages(arr) {
+    const divArea = document.querySelector("#uploadResult")
+    let str = ""
+    const url = /*[[@{/display}]]*/'url'
+    for (let i = 0; i < arr.length; i++) {
+      str+=`<div><img src='${url}?fileName=${arr[i].thumbnailURL}'>`
+      str+=`<button class='removeBtn' data-name='${arr[i].imageURL}'>X</button></div>`
+    }
+    divArea.innerHTML = str
+    const removeBtns = document.querySelectorAll(".removeBtn")
+    for (let i = 0; i < removeBtns.length; i++) {
+      removeBtns[i].addEventListener('click', (e) => {
+        const fileName = this.dataset.name;
+        const formData = new FormData();
+        formData.append("fileName", fileName);
+        const url = /*[[@{removeFile}]]*/'url'
+        fetch(url, {method: 'POST', body: formData})
+            .then(res => res.json())
+            .then(json => {
+              if (json) this.closest('div').remove();
+            })
+            .catch(err => console.log(err));
+      })
+    }
+  }
+</script>
+</body>
+</html>
