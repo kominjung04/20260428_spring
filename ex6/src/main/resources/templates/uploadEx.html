@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <!-- jQuery CDN 추가 -->
   <!--<script src="https://cdn.jsdelivr.net/npm/jquery@4.0.0/dist/jquery.min.js"
           integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao="
           crossorigin="anonymous"></script>-->
+
+  <!-- Axios CDN 추가 -->
+  <script src="https://jsdelivr.net"></script>
 </head>
 <body>
 <input type="file" name="file" id="file" multiple>
@@ -28,11 +32,27 @@
     })
   }
 </script>-->
+<script>
+  axios.get('https://typicode.com', {title: 'test', url: 'https://typicode.com'})
+      .then(response => {
+        console.log(response.data); // 콘솔에 데이터 출력
+        const user = response.data;
+
+        // 화면에 내용 표시
+        document.getElementById('result').innerHTML = `
+            <p><strong>이름:</strong> ${user.name}</p>
+            <p><strong>이메일:</strong> ${user.email}</p>
+        `;
+      })
+      .catch(error => {
+        console.error('에러 발생:', error);
+      });
+</script>
 
 <script th:inline="javascript">
-  const formData = new FormData();
   const inputFiles = document.querySelector('input[type="file"]');
   document.querySelector("button").onclick = (e) => {
+    const formData = new FormData();
     e.preventDefault();
     const files = inputFiles.files; //선택된 파일 목록을 가진 객체
     for (let i = 0; i < files.length; i++) {
@@ -41,7 +61,7 @@
     }
     const url = /*[[@{/uploadAjax}]]*/'url'
     fetch(url, {method: 'POST', body: formData, dataType: 'json'})
-        .then(res => res.json())
+        .then(res => res.json()) // List<UploadResultDTO>
         .then(json => {
           console.log(json);
           showUploadedImages(json);
@@ -50,28 +70,31 @@
   }
 
   function showUploadedImages(arr) {
-    const divArea = document.querySelector("#uploadResult")
+    const divArea = document.querySelector(".uploadResult ul")
     let str = ""
     const url = /*[[@{/display}]]*/'url'
     for (let i = 0; i < arr.length; i++) {
-      str+=`<div><img src='${url}?fileName=${arr[i].thumbnailURL}'>`
-      str+=`<button class='removeBtn' data-name='${arr[i].imageURL}'>X</button></div>`
+      str+=`<li data-name="${arr[i].fileName}" data-path="${arr[i].folderPath}"
+      data-uuid="${arr[i].uuid}" data-file="${arr[i].imageURL}">
+      <div><button class='removeBtn' data-name='${arr[i].imageURL}'>X</button>
+      <img src="${url}?fileName=${arr[i].thumbnailURL}>"></div></li>`
     }
-    divArea.innerHTML = str
+    divArea.innerHTML += str // div가 DOM트리에 마운트 됨.
+
     const removeBtns = document.querySelectorAll(".removeBtn")
     for (let i = 0; i < removeBtns.length; i++) {
-      removeBtns[i].addEventListener('click', (e) => {
-        const fileName = this.dataset.name;
+      removeBtns[i].onclick = function() {
+        const fileName = this.dataset.name
         const formData = new FormData();
-        formData.append("fileName", fileName);
-        const url = /*[[@{removeFile}]]*/'url'
-        fetch(url, {method: 'POST', body: formData})
-            .then(res => res.json())
-            .then(json => {
-              if (json) this.closest('div').remove();
-            })
-            .catch(err => console.log(err));
-      })
+        formData.append('fileName', fileName)
+        const url = /*[[@{/removeFile}]]*/
+            fetch(url, {method:'POST', body:formData,})
+                .then(res => res.json())
+                .then(json => {
+                  if(json) this.closest('div').remove();
+                })
+                .catch(err => console.log("Error:", err))
+      }
     }
   }
 </script>

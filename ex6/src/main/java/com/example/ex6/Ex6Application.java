@@ -10,7 +10,7 @@ public class Ex6Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Ex6Application.class, args);
-		System.out.println("http://localhost:8080/ex6");
+		System.out.println("http://localhost:8081/ex6");
 	}
 
 }

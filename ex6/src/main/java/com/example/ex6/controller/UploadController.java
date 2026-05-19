@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,13 +36,13 @@ public class UploadController {
   public ResponseEntity<List<UploadResultDTO>> uploadFile(MultipartFile[] uploadFiles) {
     // 전송결과를 리턴해주기 위한 객체
     List<UploadResultDTO> uploadResultDTOList = new ArrayList<>();
-
     for (MultipartFile uploadFile : uploadFiles) {
       // 업로드 파일이 이미지가 아닐 경우 forbidden
       if (!uploadFile.getContentType().startsWith("image")) {
         log.warn("This file is not image type.");
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
       }
+
       // 실제 파일 이름::IE, Edge는 전체 경로가 넘어오기 때문
       String originalName = uploadFile.getOriginalFilename(); // 경로포함 파일명
       String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
@@ -49,6 +50,7 @@ public class UploadController {
 
       // 저장될 경로 생성 :: c:\\upload\\2026\\05\\18
       String folderPath = makeFolder();
+
       // 유니크한 파일명을 위한 uuid
       String uuid = UUID.randomUUID().toString();
 
@@ -61,7 +63,7 @@ public class UploadController {
         uploadFile.transferTo(savePath); // 원본 이미지를 지정 경로에 생성
         String thumbnailSaveName = uploadPath + File.separator
             + folderPath + File.separator + "s_" + uuid + "_" + fileName;
-        File thumbnailFile = new File(thumbnailSaveName);
+        File thumbnailFile = new File(thumbnailSaveName); // 파일 생성위한 객체 생성
         if (!thumbnailFile.exists()) {
           Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
         }
@@ -93,15 +95,35 @@ public class UploadController {
         log.info("file: " + file.getName());
         // thumbnail의 파일명 s_를 제거하고 들고 오겠다는 것
         file = new File(file.getParent(), file.getName().substring(2));
-        HttpHeaders headers = new HttpHeaders();
+      }
+        HttpHeaders headers = new HttpHeaders(); // 브라우저에 전송할때 Header 필요
         headers.add("Content-Type", Files.probeContentType(file.toPath()));//파일 타입설정
         result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), headers, HttpStatus.OK);
-      }
       Path path = Paths.get(uploadPath + File.separator + fileName);
     }catch (Exception e) {
       e.printStackTrace();
     }
     return result;
+  }
+
+  @PostMapping("/removeFile")
+  public ResponseEntity<Boolean> removeFile(String fileName, String uuid) {
+    log.info(">>>"+fileName);
+    String srcFileName = null;
+
+//    if (uuid != null) movieService.removeMovieImagebyUUID(uuid);
+
+    try {
+      srcFileName = URLDecoder.decode(fileName, "UTF-8"); //정확한 소스파일명
+      File file = new File(uploadPath+File.separator+srcFileName);//해당되는 파일선택
+      boolean result = file.delete(); // 첫번째 원본 파일 지움.
+      File thumbnail = new File(file.getParent(), "s_" + file.getName());
+      result = thumbnail.delete() && result; // 두번째 썸내일 파일 지움
+      return new ResponseEntity<>(result,
+          result ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 }

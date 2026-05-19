@@ -7,6 +7,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -30,18 +31,33 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport implements S
     // 1) 도메인을 확보
     QMovie qMovie = QMovie.movie;
     QMovieImage qMovieImage = QMovieImage.movieImage;
+    QMovieImage qMovieImageSub = new QMovieImage("movieImageSub");
+
     QMember qMember = QMember.member;
     QReview qReview = QReview.review;
 
     // 2) 도메인을 조인
     JPQLQuery<Movie> jpqlQuery = from(qMovie);
-    jpqlQuery.leftJoin(qMovieImage).on(qMovieImage.movie.eq(qMovie));
+//    jpqlQuery.leftJoin(qMovieImage).on(qMovieImage.movie.eq(qMovie));
+//    jpqlQuery.leftJoin(qReview).on(qReview.movie.eq(qMovie));
+//    jpqlQuery.leftJoin(qMember).on(qReview.member.eq(qMember));
+    jpqlQuery.leftJoin(qMovieImage).on(
+        qMovieImage.movie.eq(qMovie)
+            .and(
+                qMovieImage.inum.eq(
+                    JPAExpressions
+                        .select(qMovieImageSub.inum.min())
+                        .from(qMovieImageSub)
+                        .where(qMovieImageSub.movie.eq(qMovie))
+                )
+            )
+    );
     jpqlQuery.leftJoin(qReview).on(qReview.movie.eq(qMovie));
     jpqlQuery.leftJoin(qMember).on(qReview.member.eq(qMember));
 
     // 3) Tuple 생성: 조인한 객체와 select를 이용해서 필요한 데이터를 tuple로 생성
     JPQLQuery<Tuple> tuple = jpqlQuery.select(
-        qMovie, qMovieImage, qReview.grade.avg().coalesce(0.0), qReview.count()
+        qMovie, qMovieImage, qReview.grade.avg().coalesce(0.0), qReview.countDistinct()
     );
 
     // 4) 조건절 검색을 위한 검색 객체를 생성
@@ -67,16 +83,23 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport implements S
     tuple.where(builder);
 
     // 7) 조인된 데이터의 select를 위한 group by 설정
-    tuple.groupBy(qMovie);
+    //tuple.groupBy(qMovie); //MariaDB
+    tuple.groupBy(qMovie, qMovieImage); //MySQL
 
     // 8) 정렬조건 추가
     Sort sort = pageable.getSort(); // pageable에서 정렬 정보를 가져온다.
     sort.stream().forEach( order -> {  // 하나씩 거내본다.
       Order direction = order.isAscending()? Order.ASC : Order.DESC; // 정렬객체 지정
       // Querydsl에서 동적으로 컴럶 경로를 만들기 위한 객체
-      PathBuilder orderByExpression = new PathBuilder(Movie.class, "board");
+      PathBuilder orderByExpression = new PathBuilder(Movie.class, "movie");
       // 정렬조건을 추가하는 부분
-      tuple.orderBy(new OrderSpecifier<Comparable>(direction, orderByExpression));
+      //tuple.orderBy(new OrderSpecifier<Comparable>(direction, orderByExpression));
+      tuple.orderBy(
+          new OrderSpecifier<>(
+              direction,
+              orderByExpression.get(order.getProperty())
+          )
+      );
     });
 
     // 9) tuple의 데이터를 가져오기 위한 시작 위치 지정(offset 지정)

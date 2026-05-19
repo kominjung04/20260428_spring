@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface MovieRepository extends JpaRepository<Movie, Long> {
+public interface MovieRepository extends JpaRepository<Movie, Long>,SearchRepository {
 
   // movie, 평점평균, 댓글갯수 :: 3개
   @Query("select m, avg(coalesce(r.grade, 0)), count(distinct r) " +
@@ -25,12 +25,23 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
   // movie, 이미지, 평점평균, 댓글 갯수 :: 4개
   // movieImage를 가져오되 그중 하나(max)를 들고오며 군집속성을 만족하도록 group by 추가
-  @Query("select m, mi, avg(coalesce(r.grade,0)), count(distinct r) " +
-      "from Movie m left outer join MovieImage mi on mi.movie = m " +
-      "and mi.inum = (select max(mi2.inum) from MovieImage mi2 where mi2.movie = m) " +
-      "left outer join Review r on r.movie = m  " +
-      "group by m, mi ")
+  // MariaDB
+  // @Query("select m, mi, avg(coalesce(r.grade,0)), count(distinct r) " +
+  //    "from Movie m left outer join MovieImage mi on mi.movie = m " +
+  //    "and mi.inum = (select max(mi2.inum) from MovieImage mi2 where mi2.movie = m) " +
+  //    "left outer join Review r on r.movie = m  " +
+  //    "group by m, mi ")
+
+  // MySQL
+  @Query("""
+    select m, mi, coalesce(avg(r.grade), 0), count(distinct r)
+    from Movie m left join MovieImage mi on mi.movie = m left join Review r on r.movie = m
+    where mi.inum = (select min(mi2.inum) from MovieImage mi2 where mi2.movie = m)
+    group by m, mi
+    order by m.mno desc
+    """)
   Page<Object[]> getListPageMaxMi(Pageable pageable);
+
 
   // 상세보기 페이지 전용 메서드
   @Query("select m, mi, avg(coalesce(r.grade,0)), count(r) " +
