@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- ~{}: 템플릿이나 조각(fragment)을 지정하는 문법 -->
+<th:block th:replace="~{layout/basic::setContent(~{this::content})}">
+  <th:block th:fragment="content">
+    <style>
+        .form-group {
+            margin: 30px 0 30px 0;
+        }
+
+        .uploadResult {
+            width: 100%;
+            background: gray;
+            margin-top: 10px;
+        }
+
+        .uploadResult ul {
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+
+        .uploadResult ul li {
+            list-style: none;
+            padding: 10px;
+            margin-left: 2em;
+        }
+
+        .uploadResult ul li img {
+            width: 100px;
+        }
+    </style>
+    <h1 class="mt-4">Member Register Page</h1>
+    <form th:action="@{/member/register}" method="post">
+      <div class="form-group">
+        <label for="email">이메일</label>
+        <input type="text" class="form-control" id="email" name="email" placeholder="이메일">
+      </div>
+      <div class="form-group">
+        <label for="pw">비밀번호</label>
+        <input type="password" class="form-control" id="pw" name="pw" placeholder="비밀번호">
+      </div>
+      <div class="form-group">
+        <label for="repw">비밀번호 재확인</label>
+        <input type="password" class="form-control" id="repw" name="repw" placeholder="비밀번호 재확인">
+      </div>
+      <div class="form-group">
+        <label for="nickname">닉네임</label>
+        <input type="text" class="form-control" id="nickname" name="nickname" placeholder="닉네임">
+      </div>
+      <div class="form-group box"></div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-register">등록</button>
+      </div>
+    </form>
+    <div class="uploadResult">
+      <ul></ul>
+    </div>
+
+    <script th:inline="javascript">
+      const btnRegister = document.querySelector(".btn-register")
+      const email = document.querySelector("#email")
+      const pw = document.querySelector("#pw")
+      const repw = document.querySelector("#repw");
+      const nickname = document.querySelector("#nickname")
+
+      btnRegister.onclick = e => {
+        e.preventDefault();
+        if (!email.value) {
+          email.setAttribute('placeholder', "이메일을 확인해주세요.");
+          email.focus()
+          return
+        }
+        if (!pw.value) {
+          pw.setAttribute('placeholder', "비밀번호를 확인해주세요.");
+          pw.focus()
+          return
+        }
+
+        if (!repw.value) {
+          repw.setAttribute('placeholder', "비밀번호를 확인해주세요.");
+          repw.focus();
+          return;
+        }
+
+        if (pw.value !== repw.value) {
+          alert("비밀번호가 올바르지 않습니다.")
+          repw.focus();
+          return;
+        }
+
+        if (!nickname.value) {
+          nickname.setAttribute('placeholder', "닉네임을 확인해주세요.");
+          nickname.focus()
+          return
+        }
+        document.querySelector("form").submit();
+      }
+    </script>
+  </th:block>
+</th:block>

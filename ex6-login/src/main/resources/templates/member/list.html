@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- ~{}: 템플릿이나 조각(fragment)을 지정하는 문법 -->
+<th:block th:replace="~{layout/basic::setContent(~{this::content})}">
+  <th:block th:fragment="content">
+    <h1 class="mt-4">Member List Page
+      <a th:href="@{/member/register}" class="btn btn-outline-primary">Member 추가</a>
+    </h1>
+    <form th:action="@{/member/list}" method="get" id="frmSrch" style="margin-bottom: 10px;">
+      <div class="input-group">
+        <div class="input-group-prepend" style="margin-right: 10px;">
+          <select name="type" id="type" class="form-control">
+            <option value="" th:selected="${pageRequestDTO.type == null}">전체</option>
+            <option value="e" th:selected="${pageRequestDTO.type == 'e'}">이메일</option>
+            <option value="n" th:selected="${pageRequestDTO.type == 'n'}">닉네임</option>
+            <option value="en" th:selected="${pageRequestDTO.type == 'en'}">이메일+닉네임</option>
+          </select>
+        </div>
+        <input type="text" name="keyword" id="keyword" class="form-control" style="border-radius: 5px"
+               th:value="${pageRequestDTO.keyword}">
+        <div class="input-group-append" style="margin-left: 10px;">
+          <button type="submit" class="btn btn-outline-primary btnSrch">검색</button>
+        </div>
+      </div>
+    </form>
+    <table class="table table-striped">
+      <tr>
+        <th>Mid</th>
+        <th>이메일</th>
+        <th>닉네임</th>
+        <th>Register Date</th>
+        <th>Modified Date</th>
+      </tr>
+      <tr th:each="member : ${pageResultDTO.dtoList}" style="cursor: pointer;"
+          onmouseover="this.style.background='#CFFCFF'"
+          onmouseout="this.style.background='white'"
+          th:onclick="goRead([[${member.mid}]], [[${pageResultDTO.page}]], [[${pageRequestDTO.type==null?'':pageRequestDTO.type}]],
+           [[${pageRequestDTO.keyword==null?'':pageRequestDTO.keyword}]])">
+        <th scope="row">[[${member.mid}]]</th>
+        <td>[[${member.email}]]</td>
+        <td>[[${member.nickname}]]</td>
+        <td>[[${#temporals.format(member.regDate, 'yyyy/MM/dd HH:mm')}]]</td>
+        <td>[[${#temporals.format(member.modDate, 'yyyy/MM/dd HH:mm')}]]</td>
+      </tr>
+    </table>
+    <ul class="pagination h-100 justify-content-center align-items-center">
+      <li th:if="${pageResultDTO.prev}"><a
+          th:href="@{/member/list(page=${pageResultDTO.start-1}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}"
+          class="page-link">이전</a></li>
+      <li th:each="page : ${pageResultDTO.pageList}"><a
+          th:href="@{/member/list(page=${page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}"
+          th:class="'page-link' + ${pageResultDTO.page == page ? ' active' : ''}">[[${page}]]</a></li>
+      <li th:if="${pageResultDTO.next}"><a
+          th:href="@{/member/list(page=${pageResultDTO.end+1}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}"
+          class="page-link">다음</a></li>
+    </ul>
+
+    <!-- start bootstrap.com modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <!-- <button type="button"  class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <script th:inline="javascript">
+      window.onload = () => {
+        let msg = /*[[${msg}]]*/'msg'
+        if (msg) {
+          const myModal = new bootstrap.Modal(document.querySelector('#myModal'), {backdrop: true})
+          document.querySelector('.modal-title').innerHTML = '<p>알림</p>'
+          document.querySelector('.modal-body').textContent = msg
+          myModal.show()
+          history.replaceState({}, null, null)    // 모달창 띄운 흔적을 history에서 제거
+        }
+
+        // 검색을 위한 변수 선언
+        const btnSrch = document.querySelector('.btnSrch')
+        const frmSrch = document.querySelector('#frmSrch')
+        const type = document.querySelector('#type')
+        const keyword = document.querySelector('#keyword')
+
+        if (type.value === '') {    // document가 열리고 기본적으로 select type이 '전체보기'일 경우
+          keyword.disabled = true   // 비활성화
+          btnSrch.disabled = true   // 비활성화
+        } else {
+          keyword.disabled = false  // 활성화
+          btnSrch.disabled = false  // 활성화
+        }
+
+        // select type이 변경될 경우
+        type.onchange = () => {
+          keyword.setAttribute('placeholder', '')
+          if (type.options[0].selected) {   // select type이 '전체보기'일 경우
+            keyword.value = ""
+            frmSrch.submit()
+            keyword.disabled = true
+            btnSrch.disabled = true
+          } else {
+            keyword.disabled = false
+            btnSrch.disabled = false
+          }
+        }
+      }
+
+      function goRead(mid, page, type, keyword) {
+        const url = /*[[@{/member/read}]]*/'url'
+        location.href = url + `?mid=${mid}&page=${page}&type=${type}&keyword=${keyword}`
+      }
+    </script>
+  </th:block>
+</th:block>

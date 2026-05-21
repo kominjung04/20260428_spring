@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- ~{}: 템플릿이나 조각(fragment)을 지정하는 문법 -->
+<th:block th:replace="~{layout/basic::setContent(~{this::content})}">
+  <th:block th:fragment="content">
+    <style>
+        .form-group {
+            margin: 30px 0 30px 0;
+        }
+
+        .uploadResult {
+            width: 100%;
+            background: gray;
+            margin-top: 10px;
+        }
+
+        .uploadResult ul {
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+
+        .uploadResult ul li {
+            list-style: none;
+            padding: 10px;
+            margin-left: 2em;
+        }
+
+        .uploadResult ul li img {
+            width: 100px;
+        }
+    </style>
+    <h1 class="mt-4">Member Read Page</h1>
+    <div class="form-group">
+      <label for="mid">번호</label>
+      <input type="text" id="mid" class="form-control" th:value="${memberDTO.mid}" readonly>
+    </div>
+    <div class="form-group">
+      <label for="email">이메일</label>
+      <input type="text" class="form-control" id="email" th:value="${memberDTO.email}" readonly>
+    </div>
+    <div class="form-group">
+      <label for="nickname">닉네임</label>
+      <input type="text" class="form-control" id="nickname" th:value="${memberDTO.nickname}" readonly>
+    </div>
+    <div class="form-group">
+      <label>등록 시간</label>
+      <input type="text" class="form-control" th:value="${#temporals.format(memberDTO.regDate, 'yyyy/MM/dd HH:mm')}"
+             readonly>
+    </div>
+    <div class="form-group">
+      <label>수정 시간</label>
+      <input type="text" class="form-control" th:value="${#temporals.format(memberDTO.modDate, 'yyyy/MM/dd HH:mm')}"
+             readonly>
+    </div>
+    <div class="form-group">
+      <a th:href="@{/member/modify(mid=${memberDTO.mid}, page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}"
+         class="btn btn-primary">수정</a>
+      <a th:href="@{/member/list(page=${pageRequestDTO.page}, type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}"
+         class="btn btn-info">목록으로</a>
+    </div>
+
+    <!-- start bootstrap.com modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <!-- <button type="button"  class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      const mid = /*[[${memberDTO.mid}]]*/'mid'
+      const url = /*[[@{/reviews}]]*/'url'
+
+      // document가 순서대로 읽혀지고 난 뒤 onload가 무조건 실행
+      window.onload = () => {
+        let msg = /*[[${msg}]]*/'msg'
+        if (msg) {
+          const myModal = new bootstrap.Modal(document.querySelector('#myModal'), {backdrop: true})
+          document.querySelector('.modal-title').innerHTML = '<p>알림</p>'
+          document.querySelector('.modal-body').textContent = msg
+          myModal.show()
+          history.replaceState({}, null, null)    // 모달창 띄운 흔적을 history에서 제거
+        }
+      }
+    </script>
+  </th:block>
+</th:block>

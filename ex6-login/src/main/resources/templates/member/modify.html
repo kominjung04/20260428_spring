@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<!-- ~{}: 템플릿이나 조각(fragment)을 지정하는 문법 -->
+<th:block th:replace="~{layout/basic::setContent(~{this::pw})}">
+  <th:block th:fragment="pw">
+    <style>
+        .form-group {
+            margin: 30px 0 30px 0;
+        }
+    </style>
+    <h1 class="mt-4">Member Modify Page</h1>
+    <form th:action="@{/member/modify}" method="post">
+      <div class="form-group">
+        <label for="mid">번호</label>
+        <input type="text" class="form-control" id="mid" name="mid" th:value="${memberDTO.mid}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="email">이메일</label>
+        <input type="text" class="form-control" id="email" name="email" th:value="${memberDTO.email}" placeholder="이메일"
+               readonly>
+      </div>
+      <div class="form-group">
+        <label for="pw">비밀번호</label>
+        <input type="password" class="form-control" id="pw" name="pw" th:value="${memberDTO.pw}"
+               placeholder="비밀번호" required>
+      </div>
+      <div class="form-group">
+        <label for="repw">비밀번호 재확인</label>
+        <input type="password" class="form-control" id="repw" name="repw" placeholder="비밀번호 재확인" required>
+      </div>
+      <div class="form-group">
+        <label for="nickname">닉네임</label>
+        <input type="email" class="form-control" id="nickname" name="nickname" placeholder="닉네임"
+               th:value="${memberDTO.nickname}" required>
+      </div>
+      <div class="form-group">
+        <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
+        <input type="hidden" name="type" th:value="${pageRequestDTO.type}">
+        <input type="hidden" name="keyword" th:value="${pageRequestDTO.keyword}">
+        <button type="submit" class="btn btn-primary btnModify">수정</button>
+        <button type="submit" class="btn btn-danger btnDelete">삭제</button>
+        <button type="submit" class="btn btn-info btnBack">취소</button>
+      </div>
+    </form>
+
+    <script th:inline="javascript">
+      const btnModify = document.querySelector(".btnModify");
+      const btnDelete = document.querySelector(".btnDelete");
+      const btnBack = document.querySelector(".btnBack");
+      const email = document.querySelector("#email");
+      const pw = document.querySelector("#pw");
+      const repw = document.querySelector("#repw");
+      const nickname = document.querySelector("#nickname");
+
+      btnModify.onclick = e => {
+        e.preventDefault();
+        if (!pw.value) {
+          pw.setAttribute('placeholder', "비밀번호를 확인해주세요.");
+          pw.focus();
+          return;
+        }
+
+        if (!repw.value) {
+          repw.setAttribute('placeholder', "비밀번호를 확인해주세요.");
+          repw.focus();
+          return;
+        }
+
+        if (pw.value !== repw.value) {
+          alert("비밀번호가 올바르지 않습니다.")
+          repw.focus();
+          return;
+        }
+
+        if (!nickname.value) {
+          nickname.setAttribute('placeholder', "닉네임을 확인해주세요.");
+          nickname.focus();
+          return;
+        }
+        document.querySelector("form").submit();
+      }
+
+      btnDelete.onclick = e => {
+        e.preventDefault();
+        document.querySelector("form").setAttribute('action', /*[[@{/member/remove}]]*/'remove')
+        document.querySelector("form").submit()
+      }
+
+      btnBack.onclick = e => {
+        e.preventDefault();
+        window.history.back();
+      }
+    </script>
+  </th:block>
+</th:block>
