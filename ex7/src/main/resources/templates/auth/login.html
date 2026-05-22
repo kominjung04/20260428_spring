@@ -6,11 +6,11 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <title>Please sign in</title>
-  <link href="/ex7/default-ui.css" rel="stylesheet" />
+  <link th:href="@{/css/default-ui.css}" rel="stylesheet" />
 </head>
 <body>
 <div class="content">
-  <form class="login-form" method="post" action="/ex7/login">
+  <form class="login-form" method="post" th:action="@{/login}"> <!-- security.config와 같아야 함 -->
     <h2>Custom Login Page</h2>
     <p>
       <label for="username" class="screenreader">Username</label>
