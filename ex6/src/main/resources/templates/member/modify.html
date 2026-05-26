@@ -5,35 +5,30 @@
     <style>
       .form-group {margin: 30px 0 30px 0;}
     </style>
-    <h1 class="mt-4">Movie Modify Page</h1>
-    <form th:action="@{/movie/modify}" method="post">
+    <h1 class="mt-4">Member Modify Page</h1>
+    <form th:action="@{/member/modify}" method="post">
       <div class="form-group">
-        <label for="mno">Mno</label>
-        <input type="text" name="mno" id="mno" class="form-control" th:value="${movieDTO.mno}" readonly />
+        <label for="mid">mid</label>
+        <input type="text" name="mid" id="mid" class="form-control" th:value="${memberDTO.mid}" readonly />
       </div>
       <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" name="title" id="title" class="form-control" th:value="${movieDTO.title}" />
+        <label for="nickname">nickname</label>
+        <input type="text" name="nickname" id="nickname" class="form-control" th:value="${memberDTO.nickname}" />
       </div>
       <div class="form-group">
-        <label for="content">Content</label>
-        <input type="text" name="content" id="content" class="form-control"
-               th:value="${movieDTO.content}" />
-      </div>
-      <div class="form-group">
-        <label for="writerEmail">Writer Email</label>
-        <input type="text" name="writer" id="writerEmail" class="form-control"
-               th:value="${movieDTO.writerEmail + ' (' + movieDTO.writerName + ')'}" readonly>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" class="form-control"
+               th:value="${memberDTO.email}" readonly/>
       </div>
       <div class="form-group">
         <label>Regist Date</label>
         <input type="text" class="form-control"
-               th:value="${#temporals.format(movieDTO.regDate, 'yyyy/MM/dd hh:mm')}" readonly>
+               th:value="${#temporals.format(memberDTO.regDate, 'yyyy/MM/dd hh:mm')}" readonly>
       </div>
       <div class="form-group">
         <label>Modified Date</label>
         <input type="text" class="form-control"
-               th:value="${#temporals.format(movieDTO.modDate, 'yyyy/MM/dd hh:mm')}" readonly>
+               th:value="${#temporals.format(memberDTO.modDate, 'yyyy/MM/dd hh:mm')}" readonly>
       </div>
       <div class="form-group">
         <input type="hidden" name="page" th:value="${pageRequestDTO.page}">
@@ -50,14 +45,9 @@
       const btnBack = document.querySelector(".btnBack")
       btnModify.onclick = e => {
         e.preventDefault()
-        if (!title.value) {
-          title.setAttribute('placeholder', "Title을 확인해주세요")
+        if (!nickname.value) {
+          title.setAttribute('placeholder', "nickname 확인해주세요")
           title.focus();
-          return;
-        }
-        if (!content.value) {
-          content.setAttribute('placeholder', "content를 확인해주세요")
-          content.focus();
           return;
         }
 
@@ -65,7 +55,7 @@
       }
       btnDelete.onclick = e => {
         e.preventDefault();
-        document.querySelector("form").setAttribute('action', /*[[@{/movie/remove}]]*/'remove')
+        document.querySelector("form").setAttribute('action', /*[[@{/member/remove}]]*/'remove')
         document.querySelector("form").submit();
       }
       btnBack.onclick = e => {

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -16,13 +17,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
   @EntityGraph(attributePaths = {"member"}, type = EntityGraph.EntityGraphType.FETCH)
   List<Review> findByMovie(Movie movie);
 
-  // 회원 삭제시 관련 댓글 모두 삭제
+  // 회원 삭제시 관련 review 모두 삭제
   @Modifying // update or delete 할 경우 반드시 필요
   @Query("delete from Review r where r.member = :member ")
   void deleteByMember(Member member);
 
   @Modifying // update or delete 할 경우 반드시 필요
   @Query("delete from Review r where r.movie.mno = :mno ")
-  void deleteByMno(Long mno);
+  void deleteByMno(@Param("mno")Long mno);
 
 }

@@ -39,7 +39,8 @@
           onmouseover="this.style.background='#dfdfdf'"
           onmouseout="this.style.background='white'"
           th:onclick="goRead([[${movieDTO.mno}]], [[${pageResultDTO.page}]],
-          [[${pageRequestDTO.type}]], [[${pageRequestDTO.keyword}]])">
+            [[${pageRequestDTO.type==null?'':pageRequestDTO.type}]],
+            [[${pageRequestDTO.keyword==null?'':pageRequestDTO.keyword}]])">
         <th scope="row">[[${movieDTO.mno}]]</th>
         <td>
           <!--실제 이미지를 올렸을 경우-->

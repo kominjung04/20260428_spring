@@ -81,9 +81,9 @@ public class GuestbookController {
 
   //type,keword에 null값이 문자열로 올 때 그것을 지울때
   private void typeKeywordInit(PageRequestDTO pageRequestDTO) {
-    if(pageRequestDTO.getType().equals("null") || pageRequestDTO.getType()==null)
+    if(pageRequestDTO.getType()==null || pageRequestDTO.getType().equals("null"))
       pageRequestDTO.setType(null);
-    if(pageRequestDTO.getKeyword().equals("null") || pageRequestDTO.getKeyword()==null)
+    if(pageRequestDTO.getKeyword()==null || pageRequestDTO.getKeyword().equals("null"))
       pageRequestDTO.setKeyword(null);
   }
 }

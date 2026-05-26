@@ -11,7 +11,7 @@ import java.util.List;
 public interface MovieImageRepository extends JpaRepository<MovieImage, Long> {
   @Modifying
   @Query("delete from MovieImage mi where mi.uuid=:uuid ")
-  void deleteMovieImageByUid(@Param("uuid") Long uuid);
+  void deleteByUuid(@Param("uuid") String uuid);
 
   @Modifying
   @Query("select mi from MovieImage mi where mi.movie.mno=:mno ")

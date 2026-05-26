@@ -55,7 +55,7 @@ public class MovieController {
   @PostMapping("/remove")
   public String remove(Long mno, RedirectAttributes ra, PageRequestDTO pageRequestDTO){
     log.info("remove post... mno: " + mno);
-    //movieService.removeWithReviewsAndMovieImages(mno);
+    movieService.removeWithReviewsAndMovieImages(mno);
 
     if(movieService.getList(pageRequestDTO).getDtoList().size() == 0 && pageRequestDTO.getPage() != 1) {
       pageRequestDTO.setPage(pageRequestDTO.getPage()-1);

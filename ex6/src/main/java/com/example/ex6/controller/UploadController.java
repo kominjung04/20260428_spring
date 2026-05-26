@@ -1,6 +1,8 @@
 package com.example.ex6.controller;
 
 import com.example.ex6.dto.UploadResultDTO;
+import com.example.ex6.service.MovieService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +30,10 @@ import java.util.UUID;
 
 @RestController
 @Log4j2
+@RequiredArgsConstructor
 public class UploadController {
+  private final MovieService movieService;
+
   @Value("${com.example.upload.path}")
   private String uploadPath;
 
@@ -36,6 +41,7 @@ public class UploadController {
   public ResponseEntity<List<UploadResultDTO>> uploadFile(MultipartFile[] uploadFiles) {
     // 전송결과를 리턴해주기 위한 객체
     List<UploadResultDTO> uploadResultDTOList = new ArrayList<>();
+
     for (MultipartFile uploadFile : uploadFiles) {
       // 업로드 파일이 이미지가 아닐 경우 forbidden
       if (!uploadFile.getContentType().startsWith("image")) {
@@ -50,7 +56,6 @@ public class UploadController {
 
       // 저장될 경로 생성 :: c:\\upload\\2026\\05\\18
       String folderPath = makeFolder();
-
       // 유니크한 파일명을 위한 uuid
       String uuid = UUID.randomUUID().toString();
 
@@ -63,7 +68,7 @@ public class UploadController {
         uploadFile.transferTo(savePath); // 원본 이미지를 지정 경로에 생성
         String thumbnailSaveName = uploadPath + File.separator
             + folderPath + File.separator + "s_" + uuid + "_" + fileName;
-        File thumbnailFile = new File(thumbnailSaveName); // 파일 생성위한 객체 생성
+        File thumbnailFile = new File(thumbnailSaveName);// 파일 생성위한 객체 생성
         if (!thumbnailFile.exists()) {
           Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
         }
@@ -91,17 +96,19 @@ public class UploadController {
     try {
       String srcFileName = URLDecoder.decode(fileName, "UTF-8");
       File file = new File(uploadPath + File.separator + srcFileName);
+
       if (size != null && size.equals("1")) {
         log.info("file: " + file.getName());
         // thumbnail의 파일명 s_를 제거하고 들고 오겠다는 것
         file = new File(file.getParent(), file.getName().substring(2));
       }
-        HttpHeaders headers = new HttpHeaders(); // 브라우저에 전송할때 Header 필요
-        headers.add("Content-Type", Files.probeContentType(file.toPath()));//파일 타입설정
-        result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), headers, HttpStatus.OK);
-      Path path = Paths.get(uploadPath + File.separator + fileName);
+
+      HttpHeaders headers = new HttpHeaders(); //브라우저에 전송할때 Header 필요
+      headers.add("Content-Type", Files.probeContentType(file.toPath()));//파일 타입설정
+      result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file), headers, HttpStatus.OK);
     }catch (Exception e) {
       e.printStackTrace();
+      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
     return result;
   }
@@ -111,7 +118,7 @@ public class UploadController {
     log.info(">>>"+fileName);
     String srcFileName = null;
 
-//    if (uuid != null) movieService.removeMovieImagebyUUID(uuid);
+    if (uuid != null) movieService.removeMovieImagebyUUID(uuid);
 
     try {
       srcFileName = URLDecoder.decode(fileName, "UTF-8"); //정확한 소스파일명
@@ -125,5 +132,4 @@ public class UploadController {
       throw new RuntimeException(e);
     }
   }
-
 }
