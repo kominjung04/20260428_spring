@@ -19,12 +19,10 @@ public class SecurityConfig {
   // 개방하는 주소 목록
   private static final String[] AUTH_WHITELIST = { //""는 안됨.
       "/css/**", "/js/**", "/images/**", // static 폴더
-      "/", "/auth/login" // 기본적으로 들어와서 사용해야 할 주소
+      "/", "/auth/login","/auth/accessDenied" // 기본적으로 들어와서 사용해야 할 주소
   };
 
   @Bean //SecurityFilterChain 설정시 모든 시큐리티 설정은 직접 지정해줘야 한다
-
-
   protected SecurityFilterChain config(HttpSecurity httpSecurity) throws Exception {
     //csrt(Cross Site Request Forgery) :: 교차사이트요청 위조
     //httpSecurity.csrf(csrf -> csrf.disable());// csrf 사용안할 경우
@@ -38,16 +36,19 @@ public class SecurityConfig {
       //auth.anyRequest().denyAll(); // 나머지 주소는 모두 거부해라(인증하더라도 권한없으면 안됨)
       //auth.anyRequest().authenticated(); // 나머지 주소는 인증해라
       //auth.requestMatchers("/sample/**").permitAll(); //특정 주소 관련 하위 주소까지 모두 허용
-      auth.requestMatchers("/sample/all").permitAll(); //특정 주소만 허용
       //auth.requestMatchers("/sample/manager").permitAll();
       //auth.requestMatchers("/sample/admin").permitAll();
+
       auth.requestMatchers("/auth/logout/**").authenticated(); //로그된 사용자만 로그아웃 가능
+
+      auth.requestMatchers("/sample/all").permitAll(); //특정 주소만 허용
       // 계정별 로그인해서 인증과 권한을 취득할 경우에 UserDetailsService가 자동으로 동작
       /*auth.requestMatchers("/sample/all").access(
           new WebExpressionAuthorizationManager(
               "hasRole('USER') or hasRole('MANAGER') or hasRole('ADMIN')"
           )
       );*/
+
 
       auth.requestMatchers("/sample/manager").access( // 권한 복수일때
           new WebExpressionAuthorizationManager("hasRole('MANAGER') or hasRole('ADMIN')"));
@@ -72,6 +73,11 @@ public class SecurityConfig {
           .deleteCookies("JSESSIONID") //쿠기 제거
           .invalidateHttpSession(true) //세션제거
           .clearAuthentication(true); //인증 정보 제거
+    });
+
+    httpSecurity.exceptionHandling(httpExceptionHandlingConfigurer -> {
+      // 권한이 없을 때 접근 불가 페이지 지정, AUTH_WHITELIST, AuthController 등록
+      httpExceptionHandlingConfigurer.accessDeniedPage("/auth/accessDenied");
     });
 
     return httpSecurity.build();

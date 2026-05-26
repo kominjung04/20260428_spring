@@ -21,7 +21,7 @@ public class ClubAuthMemberDTO extends User {
   private String name;
   private boolean fromSocial;
 
-
+  // Spring Security 로그인 방식에는 인증 정보가 브라우저의 Cookie와 서버의 HttpSession 조합으로 관리
   public ClubAuthMemberDTO(String username, @Nullable String password, boolean fromSocial,Collection<? extends GrantedAuthority> authorities, String email,String name) {
     super(username, password, authorities); //이 정보는 반드시 User로 전송
     this.email = email;

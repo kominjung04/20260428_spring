@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
@@ -10,7 +11,9 @@
   <li><a th:href="@{/sample/all}">/sample/all</a></li>
   <li><a th:href="@{/sample/manager}">/sample/manager</a></li>
   <li><a th:href="@{/sample/admin}">/sample/admin</a></li>
-  <li><a th:href="@{/auth/logout}">logout</a></li>
+  <li sec:authorize="isAuthenticated()"> <!--login하면 뜸 -->
+    Only Authenticated user can see this Text
+    <a th:href="@{/auth/logout}">/auth/logout</a></li>
 </ul>
 </body>
 </html>

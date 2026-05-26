@@ -36,7 +36,5 @@ public class ClubUserDetailsService implements UserDetailsService {
     dto.setFromSocial(clubMember.isFromSocial());
 
     return dto;
-
   }
-
 }

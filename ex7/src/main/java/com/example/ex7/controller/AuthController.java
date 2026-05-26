@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Log4j2
 @RequestMapping("/auth")
 public class AuthController {
-  @GetMapping({"login","logout"})
+  @GetMapping({"login","logout","accessDenied"})
   public void auth(){}
 }
