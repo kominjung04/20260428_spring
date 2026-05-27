@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    span {display: inline-block; width: 80px;}
+  </style>
+</head>
+<body>
+<h1>Social 로그인 사용자의 정보 변경</h1>
+<form th:action="@{/auth/modify}" method="post">
+  <span>E-mail</span><input type="text" name="email" th:value="${#authentication.principal.username}"><br>
+  <input type="hidden" name="username" th:value="${#authentication.principal.username}" readonly><br>
+  <span>이름</span><input type="text" name="name" id="name" th:value="${#authentication.principal.name}"><br>
+  <span>Social</span><input type="checkbox" name="fromSocial" id="fromSocial" onclick="return false"
+                            th:checked="${#authentication.principal.fromSocial}" readonly/><br>
+  <span>password</span><input type="password" name="password" id="pass"><br>
+  <span>Repassword</span><input type="password" id="rePass"><br>
+  <button type="submit" id="btnMod">정보 변경</button>
+</form>
+<script th:inline="javascript">
+  document.querySelector("#btnMod").onclick = function(e) {
+    e.preventDefault();
+    const name = document.querySelector("#name")
+    const pass = document.querySelector("#pass")
+    const rePass = document.querySelector("#rePass")
+    if (name.value === "") {alert("이름을 확인하세요");return}
+    if (pass.value === "") {alert("비밀번호를 확인하세요");return;}
+    if (rePass.value === "") {alert("비밀번호를 재 입력하세요");return;}
+    if(pass.value !== rePass.value) {alert("비밀번호가 서로 다릅니다.");return;}
+    document.querySelector("form").submit();
+  }
+</script>
+</body>
+</html>

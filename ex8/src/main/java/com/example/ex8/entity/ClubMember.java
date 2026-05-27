@@ -1,4 +1,4 @@
-package com.example.ex7.entity;
+package com.example.ex8.entity;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;

@@ -20,6 +20,11 @@ import java.util.stream.Collectors;
 public class ClubUserDetailsService implements UserDetailsService {
   private final ClubMemberRepository clubMemberRepository;
 
+  // 1. 로그인에 사용된 username으로 DB에서 찾는다.
+  // 2. 없으면 Exception 발생하고 종료
+  // 3. 있으면 인스턴스 생성
+  // 4. 저장하기 위한 세션 dto에 담고
+  // 5. 리턴 dto
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Optional<ClubMember> result = clubMemberRepository.findByEmail(username, false);
