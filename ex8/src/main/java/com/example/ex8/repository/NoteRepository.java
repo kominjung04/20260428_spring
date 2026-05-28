@@ -13,10 +13,10 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
 
   @EntityGraph(attributePaths = {"writer"}, type = EntityGraph.EntityGraphType.LOAD)
   @Query("select n from Note n where n.num=:num ")
-  Optional<Note> readNote(Long num);
+  Optional<Note> getNoteWithNum(Long num);
 
   @EntityGraph(attributePaths = {"writer"}, type = EntityGraph.EntityGraphType.LOAD)
-  @Query("select n from Note n where n.writer.eamil=:email ")
+  @Query("select n from Note n where n.writer.email=:email ")
   List<Note> getNoteWithWriter(String email);
 
 }

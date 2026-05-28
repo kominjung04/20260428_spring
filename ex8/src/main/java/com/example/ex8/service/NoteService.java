@@ -4,6 +4,8 @@ import com.example.ex8.dto.NoteDTO;
 import com.example.ex8.entity.ClubMember;
 import com.example.ex8.entity.Note;
 
+import java.util.List;
+
 public interface NoteService {
 
   Long register(NoteDTO noteDTO);
@@ -14,7 +16,9 @@ public interface NoteService {
 
   void remove(NoteDTO noteDTO);
 
-  default NoteDTO entityToDTO(Note note) {
+  List<NoteDTO> getAllWithWriter(String writerEmail);
+
+  default NoteDTO EntityToDTO(Note note) {
     NoteDTO dto = NoteDTO.builder()
         .num(note.getNum())
         .title(note.getTitle())
