@@ -26,6 +26,7 @@ public class SecurityConfig {
       "/css/**", "/js/**", "/images/**", // static 폴더
       "/", "/auth/login"
   };
+  // /주소/** :: 하위복수주소 뿐만 아니라 쿼리까지 포함.
   private static final String[] AUTH_LOGIN_WHITELIST = {
       "/auth/accessDenied","/auth/modify","/auth/logout/**"
   };
