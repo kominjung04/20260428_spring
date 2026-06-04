@@ -1,8 +1,7 @@
-package com.example.ex8.security.filter;
+package com.example.ex8maven.security.filter;
 
-import com.example.ex8.security.dto.ClubAuthMemberDTO;
-import com.example.ex8.security.utill.JWTUtil;
-import com.nimbusds.jwt.JWT;
+import com.example.ex8maven.security.dto.ClubAuthMemberDTO;
+import com.example.ex8maven.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

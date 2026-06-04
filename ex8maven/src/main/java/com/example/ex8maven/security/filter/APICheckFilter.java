@@ -1,6 +1,6 @@
-package com.example.ex8.security.filter;
+package com.example.ex8maven.security.filter;
 
-import com.example.ex8.security.utill.JWTUtil;
+import com.example.ex8maven.security.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,13 +15,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Log4j2
-//APICheckFilter :: 요청한 주소가 서버에 토큰 발행이 필요하는지 확인
 public class APICheckFilter extends OncePerRequestFilter {
   private String[] pattern;
   private AntPathMatcher matcher;
   private JWTUtil jwtUtil;
 
-  public APICheckFilter(String[] pattern,JWTUtil jwtUtil) {
+  public APICheckFilter(String[] pattern, JWTUtil jwtUtil) {
     this.pattern = pattern;
     this.matcher = new AntPathMatcher();
     this.jwtUtil = jwtUtil;
@@ -29,25 +28,26 @@ public class APICheckFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-    log.info("APICheckFilter...............");
+    log.info("APICheckFilter........................");
+
     boolean check = false;
     for (int i = 0; i < pattern.length; i++) {
-        log.info(">>>" + request.getContextPath() + pattern[i]);
-        log.info(">>>" + request.getRequestURI());
-    // 사용자가 요청한 주소와 checkFilter에 등록된 목록중에 같은 것이 있느냐?
+      // 사용자가 요청한 주소와 checkFilter에 등록된 목록중에 같은 것이 있느냐?
+      log.info(">>>"+request.getContextPath() + pattern[i]);
+      log.info(">>>"+request.getRequestURI());
+      log.info("matcher: " + matcher.match(request.getContextPath() + pattern[i], request.getRequestURI()));
       if (matcher.match(request.getContextPath() + pattern[i], request.getRequestURI())) {
-        log.info("matcher:" + matcher.match(request.getContextPath() + pattern[i], request.getRequestURI()));
         check = true; // 있으면 true
         break;
       }
-      ;
     }
     if (check) { // 요청 주소와 패턴의 주소가 일치하는 경우
-      if (checkAuthHeader(request)) { // 토큰이 있는 경우
-        // request :: 클라이언트 요청,response :: 서버가 응답
-        filterChain.doFilter(request, response); // 해당 필터가 확인 후 다음 과정으로 넘김
+      if (checkAuthHeader(request)) {  // 토큰이 있는 경우
+        log.info("token Pass!");
+        filterChain.doFilter(request, response); // 해당필터 확인후 다음 과정으로 넘김.
         return;
-      } else { // 토큰이 없는 경우
+      } else {                        // 토큰이 없는 경우
+        log.info("token Fail!");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json;charset=UTF-8");
         JSONObject jsonObj = new JSONObject();
@@ -58,8 +58,8 @@ public class APICheckFilter extends OncePerRequestFilter {
         out.println(jsonObj);
         return;
       }
-    } else { // 요청 주소와 패턴의 주소가 불일치 하는 경우, JWT 체크 안함
-      log.info("Request doesn't match protected patterns. Skipping JWT check.");
+    } else {     // 요청 주소와 패턴의 주소가 불일치 하는 경우, JWT 체크 안함.
+      log.info("Request does not match protected patterns. Skipping JWT check.");
     }
 
     filterChain.doFilter(request, response); // 필터링만 하고 나머지는 원래 루틴으로 흘려보낸다.
@@ -73,15 +73,11 @@ public class APICheckFilter extends OncePerRequestFilter {
     if (authHeader != null && StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
       log.info("authHeader:" + authHeader);
       try {
-        String email = jwtUtil.validateAndExtract(authHeader.substring(7));//Bearer 뒤에 토큰발생하기에 7
+        String email = jwtUtil.validateAndExtract(authHeader.substring(7));
         log.info("checkAuthHeader email:" + email);
         checkResult = email.length() > 0;
       } catch (Exception e) {
         throw new RuntimeException(e);
-      }
-
-      if (authHeader.startsWith("Bearer ")) {
-        checkResult = true;
       }
     }
     return checkResult;

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.ex8maven.mappers.NotesMapper">
+
+    <resultMap id="noteMap" type="com.example.ex8maven.entity.Note">
+        <id property="num" column="num"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="regDate" column="regdate"/>
+        <result property="modDate" column="moddate"/>
+        <!-- writer 객체 내부의 email -->
+        <association property="writer" javaType="com.example.ex8maven.entity.ClubMember">
+            <id property="email" column="writer_email"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <select id="getNote" parameterType="java.lang.String" resultMap="noteMap">
+        select n.num, n.title, n.content, n.regdate, n.moddate, c.email as writer_email, c.name
+        from note n join club_member c on n.writer_email = c.email
+        where n.writer_email = #{email}
+    </select>
+
+    <select id="getAllNotes" resultMap="noteMap">
+        select n.num, n.title, n.content, n.regdate, n.moddate, c.email as writer_email,
+        c.name, c.password, c.from_social
+        from note n join club_member c on n.writer_email = c.email
+        order by n.num desc
+    </select>
+
+    <insert id="insertNote" parameterType="com.example.ex8maven.entity.Note">
+        insert into note ( title, content, writer_email )
+        values ( #{title}, #{content}, #{writer.email} )
+    </insert>
+
+    <update id="updateNote" parameterType="com.example.ex8maven.entity.Note">
+        update note set title = #{title}, content = #{content} where num = #{num}
+    </update>
+
+    <delete id="deleteNote" parameterType="java.lang.String">
+        delete from note where writer_email = #{email}
+    </delete>
+
+</mapper>
