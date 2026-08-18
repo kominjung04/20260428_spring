@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/guestbook")
+@RequestMapping("/guestbook") // 공통 주소 , 아래의 메서드는 /geustbook으로 시작
 @Log4j2
 @RequiredArgsConstructor
 public class GuestbookController {
   private final GuestbookService guestbookService;
 
   @GetMapping({"", "/", "list"})
-  public String list(Model model, PageRequestDTO pageRequestDTO) {
+  public String list(Model model, PageRequestDTO pageRequestDTO) { //Modal modal :: 화면으로 데이터 전달
     model.addAttribute("pageResultDTO", guestbookService.getList(pageRequestDTO));
     return "guestbook/list";
   }

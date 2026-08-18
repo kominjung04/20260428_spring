@@ -1,37 +1,20 @@
 package com.example.ex6.service;
 
-import com.example.ex6.dto.*;
+import com.example.ex6.dto.MemberDTO;
+import com.example.ex6.dto.PageRequestDTO;
+import com.example.ex6.dto.PageResultDTO;
 import com.example.ex6.entity.Member;
-import com.example.ex6.entity.Movie;
-import com.example.ex6.entity.MovieImage;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.example.ex6.entity.QMovie.movie;
 
 public interface MemberService {
+  MemberDTO getMember(Long mid);
+  Long update(MemberDTO memberDTO);
+  PageResultDTO<MemberDTO, Member> getMemberList(PageRequestDTO pageRequestDTO);
   Long register(MemberDTO memberDTO);
-  PageResultDTO<MemberDTO, Object[]> getList(PageRequestDTO pageRequestDTO);
-  MemberDTO get(Long mid);
-  Long modify(MemberDTO memberDTO);
-  public Long remove(Long mid);
+  Long delete(Long mid);
+  MemberDTO checkLogin(String email, String password);
 
-  default Map<String, Object> dtoToEntity(MemberDTO memberDTO) {
-    Map<String, Object> map = new HashMap<>();
-    Member member = Member.builder()
-        .mid(memberDTO.getMid())
-        .email(memberDTO.getEmail())
-        .pw(memberDTO.getPw())
-        .nickname(memberDTO.getNickname())
-        .build();
-    map.put("member", member);
-    return map;
-
-  }
-
-  default MemberDTO entitiesToDTO(Member member) {
-    MemberDTO memberDTO = MemberDTO.builder()
+  default MemberDTO entityToDTO(Member member) {
+    return MemberDTO.builder()
         .mid(member.getMid())
         .email(member.getEmail())
         .pw(member.getPw())
@@ -39,6 +22,14 @@ public interface MemberService {
         .regDate(member.getRegDate())
         .modDate(member.getModDate())
         .build();
-    return memberDTO;
+  }
+
+  default Member dtoToEntity(MemberDTO memberDTO) {
+    return Member.builder()
+        .mid(memberDTO.getMid())
+        .email(memberDTO.getEmail())
+        .pw(memberDTO.getPw())
+        .nickname(memberDTO.getNickname())
+        .build();
   }
 }

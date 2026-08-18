@@ -13,12 +13,10 @@ public interface MovieImageRepository extends JpaRepository<MovieImage, Long> {
   @Query("delete from MovieImage mi where mi.uuid=:uuid ")
   void deleteByUuid(@Param("uuid") String uuid);
 
-  @Modifying
-  @Query("select mi from MovieImage mi where mi.movie.mno=:mno ")
+  @Query("select mi from MovieImage mi where mi.movie.mno=:mno")
   List<MovieImage> findByMno(@Param("mno") Long mno);
 
   @Modifying
-  @Query("delete from MovieImage mi where mi.movie.mno=:mno ")
-  void deleteByMno(@Param("uuid") Long mno);
-
+  @Query("delete from MovieImage mi where mi.movie.mno=:mno")
+  void deleteByMno(@Param("mno") long mno);
 }

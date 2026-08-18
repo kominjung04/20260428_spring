@@ -56,10 +56,13 @@ public class MovieServiceImpl implements MovieService {
   @Override
   public Long register(MovieDTO movieDTO) {
     Map<String, Object> map = dtoToEntity(movieDTO);
+
     Movie movie = (Movie)map.get("movie");
     List<MovieImage> movieImageList =(List<MovieImage>) map.get("imgList");
+
     movieRepository.save(movie);
     movieImageList.forEach(image -> movieImageRepository.save(image));
+
     return movie.getMno();
   }
 

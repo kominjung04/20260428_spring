@@ -31,7 +31,7 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport implements S
     // 1) 도메인을 확보
     QMovie qMovie = QMovie.movie;
     QMovieImage qMovieImage = QMovieImage.movieImage;
-    QMovieImage qMovieImageSub = new QMovieImage("movieImageSub");
+    QMovieImage qMovieImageSub = new QMovieImage("movieImageSub");  //MySQL
 
     QMember qMember = QMember.member;
     QReview qReview = QReview.review;
@@ -83,8 +83,8 @@ public class SearchRepositoryImpl extends QuerydslRepositorySupport implements S
     tuple.where(builder);
 
     // 7) 조인된 데이터의 select를 위한 group by 설정
-    //tuple.groupBy(qMovie); //MariaDB
-    tuple.groupBy(qMovie, qMovieImage); //MySQL
+    //tuple.groupBy(qMovie); // MariaDB
+    tuple.groupBy(qMovie, qMovieImage);  //MySQL
 
     // 8) 정렬조건 추가
     Sort sort = pageable.getSort(); // pageable에서 정렬 정보를 가져온다.

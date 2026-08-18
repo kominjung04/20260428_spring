@@ -19,6 +19,6 @@ public class Member extends BasicEntity{
   private String pw;
   private String nickname;
 
-  public void changeNickname(String nickname) {this.nickname = nickname;}
   public void changePw(String pw) {this.pw = pw;}
+  public void changeNickname(String nickname) {this.nickname = nickname;}
 }

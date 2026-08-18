@@ -36,7 +36,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long>, SearchRepos
   @Query("""
     select m, mi, coalesce(avg(r.grade), 0), count(distinct r)
     from Movie m left join MovieImage mi on mi.movie = m left join Review r on r.movie = m
-    where mi.inum = (select min(mi2.inum) from MovieImage mi2 where mi2.movie = m)
+    where mi.inum = (select max(mi2.inum) from MovieImage mi2 where mi2.movie = m)
     group by m, mi
     order by m.mno desc
     """)

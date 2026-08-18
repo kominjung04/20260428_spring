@@ -9,16 +9,12 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class MemberDTO {
-  private Long mid;
-  private String email;
-  private String pw;
-  private String nickname;
-
-
-  private LocalDateTime regDate;
-  private LocalDateTime modDate;
-
+    private Long mid;
+    private String email;
+    private String pw;
+    private String nickname;
+    private LocalDateTime regDate, modDate;
 }

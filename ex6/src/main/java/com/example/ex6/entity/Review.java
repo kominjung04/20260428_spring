@@ -14,7 +14,7 @@ public class Review extends BasicEntity{
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long reviewNum;
 
-  @ManyToOne(fetch = FetchType.LAZY) //성능저하를 막기 위한 게으른 연결
+  @ManyToOne(fetch = FetchType.LAZY)
   private Movie movie;
 
   @ManyToOne(fetch = FetchType.LAZY)

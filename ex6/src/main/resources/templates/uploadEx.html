@@ -50,9 +50,9 @@
 </script>
 
 <script th:inline="javascript">
+  const formData = new FormData();
   const inputFiles = document.querySelector('input[type="file"]');
   document.querySelector("button").onclick = (e) => {
-    const formData = new FormData();
     e.preventDefault();
     const files = inputFiles.files; //선택된 파일 목록을 가진 객체
     for (let i = 0; i < files.length; i++) {
@@ -70,16 +70,14 @@
   }
 
   function showUploadedImages(arr) {
-    const divArea = document.querySelector(".uploadResult ul")
+    const divArea = document.querySelector("#uploadResult")
     let str = ""
     const url = /*[[@{/display}]]*/'url'
     for (let i = 0; i < arr.length; i++) {
-      str+=`<li data-name="${arr[i].fileName}" data-path="${arr[i].folderPath}"
-      data-uuid="${arr[i].uuid}" data-file="${arr[i].imageURL}">
-      <div><button class='removeBtn' data-name='${arr[i].imageURL}'>X</button>
-      <img src="${url}?fileName=${arr[i].thumbnailURL}>"></div></li>`
+      str+=`<div><img src='${url}?fileName=${arr[i].thumbnailURL}'>`
+      str+=`<button class='removeBtn' data-name='${arr[i].imageURL}'>X</button></div>`
     }
-    divArea.innerHTML += str // div가 DOM트리에 마운트 됨.
+    divArea.innerHTML = str // div가 DOM트리에 마운트 됨.
 
     const removeBtns = document.querySelectorAll(".removeBtn")
     for (let i = 0; i < removeBtns.length; i++) {

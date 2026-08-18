@@ -1,5 +1,6 @@
 package com.example.ex6.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +25,4 @@ public class MovieDTO {
   private int reviewCnt;
   private LocalDateTime regDate;
   private LocalDateTime modDate;
-
 }

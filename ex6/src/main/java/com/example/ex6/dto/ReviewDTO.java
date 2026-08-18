@@ -19,5 +19,5 @@ public class ReviewDTO {
   private String email;
   private int grade;
   private String text;
-  private LocalDateTime regDate,modDate;
+  private LocalDateTime regDate, modDate;
 }
